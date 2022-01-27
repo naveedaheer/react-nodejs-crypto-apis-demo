@@ -7,8 +7,10 @@ import TableRow from "@mui/material/TableRow";
 import TableHead from "@mui/material/TableHead";
 import { useDispatch, useSelector } from "react-redux";
 import { cryptoActions } from "../store/actions";
-import { Common } from "../types/common.types";
+import { Common, CurrencyPair } from "../types/common.types";
 import { RootState } from "../store/reducers";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
 import {
   Card,
   //   LinearProgress,
@@ -17,13 +19,14 @@ import {
   ThemeProvider,
 } from "@mui/material";
 import { makeStyles, createStyles } from "@mui/styles";
-import { StyledTableHeadCell } from "./StyledComponents";
+import { StyledDividerLine, StyledTableHeadCell } from "./StyledComponents";
 import { tableTheme } from "./styles/table-style";
 
 const useStyles = makeStyles(() =>
   createStyles({
     root: {
       margin: "10px auto",
+      paddingTop: "10px",
     },
     table: {
       minWidth: 650,
@@ -57,15 +60,31 @@ const useStyles = makeStyles(() =>
 const Information = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const [value, setValue] = React.useState({
+    symbol: "",
+    price: "",
+  });
   React.useEffect(() => {
-    dispatch(cryptoActions.getSettlementList());
+    dispatch(cryptoActions.getCurrencyPair());
   }, [dispatch]);
-
+  console.log(value);
   const cryptoReducer = useSelector((state: RootState) => state.cryptoReducers);
-  const cryptoData: Common[] = cryptoReducer.bidList || [];
+  const currency: CurrencyPair[] = cryptoReducer.currencyPair || [];
   return (
     <>
       <div>
+        <Autocomplete
+          disablePortal
+          id="combo-box-demo"
+          options={currency}
+          getOptionLabel={(option: CurrencyPair) => option.symbol || ""}
+          onChange={(event, value) => setValue(value as CurrencyPair)}
+          sx={{ width: 300 }}
+          renderInput={(params) => (
+            <TextField {...params} label="Currency Pairs" />
+          )}
+        />
+        <StyledDividerLine />
         <Card className={classes.root}>
           <TableContainer component={Paper}>
             <ThemeProvider theme={tableTheme}>
@@ -93,7 +112,7 @@ const Information = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {cryptoData &&
+                  {/* {cryptoData &&
                     cryptoData.map((row) => (
                       <TableRow style={{ position: "relative" }}>
                         <>
@@ -111,7 +130,7 @@ const Information = () => {
                           </TableCell>
                         </>
                       </TableRow>
-                    ))}
+                    ))} */}
                 </TableBody>
               </Table>
             </ThemeProvider>
