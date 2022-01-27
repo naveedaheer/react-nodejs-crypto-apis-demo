@@ -6,7 +6,7 @@ exports.fetchController = async (req, res) => {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     }
-    const requestUrl = "https://api.binance.com/api/v3/ticker/bookTicker";
+    const requestUrl = "https://api.binance.com/api/v3/depth?symbol=ETHBTC&limit=5";
     const responseItem = await fetch(requestUrl, { method: 'GET', headers: customHeaders })
     const data = await responseItem.json();
     res.status(200).json({
