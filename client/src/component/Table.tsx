@@ -1,5 +1,10 @@
 import React from 'react';
-import { TableBody, TableCell, TableContainer, TableHead, TableRow, Table } from '@material-ui/core';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableRow from '@mui/material/TableRow';
+import TableHead from '@mui/material/TableHead';
 import { useDispatch, useSelector } from 'react-redux';
 import { cryptoActions } from '../store/actions';
 import { Common } from '../types/common.types';
@@ -21,12 +26,12 @@ const Information = () => {
                         <TableHead>
                             <TableRow>
                                 <TableCell>
-                                    Symbol
+                                    SYMBOL
                                 </TableCell>
-                                <TableCell>bid Price</TableCell>
-                                <TableCell>bid Quantity</TableCell>
-                                <TableCell>ask Price</TableCell>
-                                <TableCell>ask Qty</TableCell>
+                                <TableCell>BID PRICE</TableCell>
+                                <TableCell>BID QUANTITY</TableCell>
+                                <TableCell>ASK PRICE</TableCell>
+                                <TableCell>ASK QUANTITY</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -42,10 +47,9 @@ const Information = () => {
                         </TableBody>
                     </Table>
                 </TableContainer>
-            </div>;
+            </div>
         </>
     )
-
 };
 
 export default Information;

@@ -16,7 +16,6 @@ const getSettlementList = () => {
     cryptoService.getCrypto()
         .then(
           (res) => {
-            console.log(res)
             dispatch(success(res.data.data));
           },
         ).catch((error: AxiosError) => dispatch(failure(error.response?.data?.errors || [])));
