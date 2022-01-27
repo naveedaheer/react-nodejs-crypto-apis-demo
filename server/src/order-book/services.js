@@ -17,6 +17,23 @@ const getOrderBooks = (params) => {
     });
 };
 
+const currencyPairs = () => {
+  return fetch(
+    `${config.baseURL}/ticker/price`,
+    {
+      method: "GET",
+      headers: config.customHeaders,
+    }
+  )
+    .then(async (response) => {
+      return await response.json();
+    })
+    .catch((err) => {
+      return err;
+    });
+};
+
 module.exports = {
   getOrderBooks,
+  currencyPairs
 };
