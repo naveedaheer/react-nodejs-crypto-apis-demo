@@ -1,17 +1,17 @@
-import { Common, CurrencyPair } from "../../types/common.types";
+import { OrderBook, CurrencyPair } from "../../types/common.types";
 import { AdminTableActionTypes, adminTableConstants } from "../constants";
 
 export interface IState {
   loading: boolean;
   isError: boolean;
-  bidList: Common[];
+  orderBooks: OrderBook[];
   currencyPair: CurrencyPair[];
 }
 
 const initialState: IState = {
   loading: false,
   isError: false,
-  bidList: [],
+  orderBooks: [],
   currencyPair: [],
 };
 
@@ -31,7 +31,7 @@ export const cryptoReducers = (
         ...state,
         loading: false,
         isError: false,
-        bidList: action.bidList,
+        orderBooks: action.orderBooks,
       };
     case adminTableConstants.GET_TABLE_LIST_FAILURE:
       return {

@@ -1,4 +1,4 @@
-import { Common, CurrencyPair } from "../../types/common.types";
+import { OrderBook, CurrencyPair } from "../../types/common.types";
 
 interface Types {
   GET_TABLE_LIST_REQUEST: string;
@@ -21,37 +21,37 @@ export const adminTableConstants: Types = {
 };
 interface LoadGetAdminTableListAction {
   type: typeof adminTableConstants.GET_TABLE_LIST_REQUEST;
-  bidList: Common[];
+  orderBooks: OrderBook[];
   currencyPair: CurrencyPair[];
 }
 
 interface LoadedGetAdminTableListAction {
   type: typeof adminTableConstants.GET_TABLE_LIST_SUCCESS;
-  bidList: Common[];
+  orderBooks: OrderBook[];
   currencyPair: CurrencyPair[];
 }
 
 interface FailedGetAdminTableListAction {
   type: typeof adminTableConstants.GET_TABLE_LIST_FAILURE;
-  bidList: Common[];
+  orderBooks: OrderBook[];
   currencyPair: CurrencyPair[];
 }
 
 interface LoadGetCurrencyPairListAction {
   type: typeof adminTableConstants.GET_CURRENCY_PAIR_REQUEST;
-  bidList: Common[];
+  orderBooks: OrderBook[];
   currencyPair: CurrencyPair[];
 }
 
 interface LoadedGetCurrencyPairListAction {
   type: typeof adminTableConstants.GET_CURRENCY_PAIR_SUCCESS;
-  bidList: Common[];
+  orderBooks: OrderBook[];
   currencyPair: CurrencyPair[];
 }
 
 interface FailedGetCurrencyPairListAction {
   type: typeof adminTableConstants.GET_CURRENCY_PAIR_FAILURE;
-  bidList: Common[];
+  orderBooks: OrderBook[];
   currencyPair: CurrencyPair[];
 }
 export type AdminTableActionTypes =
