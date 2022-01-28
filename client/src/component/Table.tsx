@@ -58,10 +58,9 @@ const Information = () => {
   }, [dispatch, value]);
 
   const cryptoReducer = useSelector((state: RootState) => state.cryptoReducers);
-  const tableData: OrderBook[] = cryptoReducer.orderBooks || [];
+  const orderBooks: any = cryptoReducer.orderBooks || [];
   const currency: CurrencyPair[] = cryptoReducer.currencyPair || [];
 
-  console.log(tableData)
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -88,30 +87,38 @@ const Information = () => {
                 <TableHead>
                   <TableRow>
                     <StyledTableCell>BID (PRICE / QTY)</StyledTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {
+                    orderBooks && orderBooks.bids && orderBooks.bids.map((item: string[]) => (
+                      <>
+                        <StyledTableRow>
+                          <StyledTableCell>{item[0]}<br />{item[1]}</StyledTableCell>
+                        </StyledTableRow>
+                      </>
+                    ))
+                  }
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                <TableHead>
+                  <TableRow>
                     <StyledTableCell>ASK (PRICE / QTY)</StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  <StyledTableRow>
-                    <StyledTableCell component="th" scope="row">0.06580800<br />1.83970000</StyledTableCell>
-                    <StyledTableCell>0.06580900<br />10.23480000</StyledTableCell>
-                  </StyledTableRow>
-                  <StyledTableRow>
-                    <StyledTableCell>0.06580300<br />0.14850000</StyledTableCell>
-                    <StyledTableCell>0.06581000<br />1.70000000</StyledTableCell>
-                  </StyledTableRow>
-                  <StyledTableRow>
-                    <StyledTableCell>0.06579900<br />0.14850000</StyledTableCell>
-                    <StyledTableCell>0.06581100<br />0.02560000</StyledTableCell>
-                  </StyledTableRow>
-                  <StyledTableRow>
-                    <StyledTableCell>0.06579600<br />0.10000000</StyledTableCell>
-                    <StyledTableCell>0.06581600<br />0.39140000</StyledTableCell>
-                  </StyledTableRow>
-                  <StyledTableRow>
-                    <StyledTableCell>0.06579200<br />0.05940000</StyledTableCell>
-                    <StyledTableCell>0.06581700<br />0.97780000</StyledTableCell>
-                  </StyledTableRow>
+                  {
+                    orderBooks && orderBooks.bids && orderBooks.asks.map((item: string[]) => (
+                      <>
+                        <StyledTableRow>
+                          <StyledTableCell>{item[0]}<br />{item[1]}</StyledTableCell>
+                        </StyledTableRow>
+                      </>
+                    ))
+                  }
                 </TableBody>
               </Table>
             </TableContainer>
