@@ -13,12 +13,10 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import {
   Card,
-  Paper,
 } from "@mui/material";
 import { styled } from '@mui/material/styles';
 import { tableCellClasses } from '@mui/material/TableCell';
 import { StyledDividerLine } from "./StyledComponents";
-import { borderRadius } from "@mui/system";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -51,11 +49,15 @@ const Information = () => {
     symbol: "",
   });
   const [selectedFilters, setSelectedFilters] = React.useState<filters>(initialFilters);
+
   React.useEffect(() => {
     dispatch(cryptoActions.getCurrencyPair());
   }, [dispatch]);
+
   React.useEffect(() => {
-    dispatch(cryptoActions.getOrderBook(selectedFilters));
+    if (selectedFilters?.pair) {
+      dispatch(cryptoActions.getOrderBook(selectedFilters));
+    }
   }, [dispatch, value, selectedFilters]);
 
   const cryptoReducer = useSelector((state: RootState) => state.cryptoReducers);
@@ -92,9 +94,9 @@ const Information = () => {
                 </TableHead>
                 <TableBody>
                   {
-                    orderBooks && orderBooks.bids && orderBooks.bids.map((item: string[]) => (
+                    orderBooks && orderBooks.bids && orderBooks.bids.map((item: string[], i: number) => (
                       <>
-                        <StyledTableRow>
+                        <StyledTableRow key={i}>
                           <StyledTableCell>{item[0]}<br />{item[1]}</StyledTableCell>
                         </StyledTableRow>
                       </>
@@ -112,9 +114,9 @@ const Information = () => {
                 </TableHead>
                 <TableBody>
                   {
-                    orderBooks && orderBooks.bids && orderBooks.asks.map((item: string[]) => (
+                    orderBooks && orderBooks.bids && orderBooks.asks.map((item: string[], i: number) => (
                       <>
-                        <StyledTableRow>
+                        <StyledTableRow key={i}>
                           <StyledTableCell>{item[0]}<br />{item[1]}</StyledTableCell>
                         </StyledTableRow>
                       </>
