@@ -1,14 +1,14 @@
 import { Dispatch } from "redux";
 import { AxiosError } from "axios";
 import { adminTableConstants } from "../constants";
-import { Common, CurrencyPair } from "../../types/common.types";
+import { OrderBook, CurrencyPair } from "../../types/common.types";
 import { cryptoService } from "../../services/crypto";
 
 const getSettlementList = () => {
   const request = () => ({ type: adminTableConstants.GET_TABLE_LIST_REQUEST });
-  const success = (bidList: Common[]) => ({
+  const success = (orderBooks: OrderBook[]) => ({
     type: adminTableConstants.GET_TABLE_LIST_SUCCESS,
-    bidList,
+    orderBooks,
   });
   const failure = (error: any) => ({
     type: adminTableConstants.GET_TABLE_LIST_FAILURE,
@@ -19,7 +19,7 @@ const getSettlementList = () => {
     cryptoService
       .getCrypto()
       .then((res) => {
-        dispatch(success(res.data.data));
+        dispatch(success(res.data));
       })
       .catch((error: AxiosError) =>
         dispatch(failure(error.response?.data?.errors || []))
