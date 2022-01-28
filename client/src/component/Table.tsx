@@ -18,6 +18,7 @@ import {
 import { styled } from '@mui/material/styles';
 import { tableCellClasses } from '@mui/material/TableCell';
 import { StyledDividerLine } from "./StyledComponents";
+import { borderRadius } from "@mui/system";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -25,7 +26,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
+    fontSize: 15,
   },
 }));
 
@@ -63,7 +64,7 @@ const Information = () => {
 
   return (
     <>
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '50px' }}>
         <div>
           <div style={{ margin: '10px' }}>
             <Autocomplete
@@ -81,9 +82,9 @@ const Information = () => {
           <div style={{ margin: '10px' }}>
             <StyledDividerLine />
           </div>
-          <Card style={{ margin: '10px' }}>
-            <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 400 }} aria-label="customized table">
+          <Card style={{ margin: '10px', display: 'flex' }}>
+            <TableContainer style={{ borderRadius: '0px !important' }}>
+              <Table sx={{ minWidth: 240 }} aria-label="customized table">
                 <TableHead>
                   <TableRow>
                     <StyledTableCell>BID (PRICE / QTY)</StyledTableCell>
@@ -102,8 +103,8 @@ const Information = () => {
                 </TableBody>
               </Table>
             </TableContainer>
-            <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 400 }} aria-label="customized table">
+            <TableContainer style={{ borderRadius: '0px !important' }}>
+              <Table sx={{ minWidth: 240 }} aria-label="customized table">
                 <TableHead>
                   <TableRow>
                     <StyledTableCell>ASK (PRICE / QTY)</StyledTableCell>
