@@ -1,1 +1,1 @@
-## This repository contains frontend and backend
+This repository contains frontend on React with redux using TypeScript and backend on Nodejs.
