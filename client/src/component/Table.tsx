@@ -7,58 +7,41 @@ import TableRow from "@mui/material/TableRow";
 import TableHead from "@mui/material/TableHead";
 import { useDispatch, useSelector } from "react-redux";
 import { cryptoActions } from "../store/actions";
-import { Common, CurrencyPair } from "../types/common.types";
+import { OrderBook, CurrencyPair } from "../types/common.types";
 import { RootState } from "../store/reducers";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
+import { w3cwebsocket as W3CWebSocket } from "websocket";
 import {
   Card,
-  //   LinearProgress,
   Paper,
-  //   TablePagination,
-  ThemeProvider,
 } from "@mui/material";
-import { makeStyles, createStyles } from "@mui/styles";
-import { StyledDividerLine, StyledTableHeadCell } from "./StyledComponents";
-import { tableTheme } from "./styles/table-style";
+import { styled } from '@mui/material/styles';
+import { tableCellClasses } from '@mui/material/TableCell';
+import { StyledDividerLine } from "./StyledComponents";
+const client = new W3CWebSocket('ws://localhost:8000');
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      margin: "10px auto",
-      paddingTop: "10px",
-    },
-    table: {
-      minWidth: 650,
-    },
-    tableHeadCell: {
-      fontSize: "13px",
-      fontWeight: "bold",
-      lineHeight: "1.2",
-      letterSpacing: "0.9",
-      textAlign: "left",
-      color: "#232931",
-    },
-    tableBodyCell: {
-      color: "#232931",
-      fontSize: "11px",
-      paddingTop: "8px",
-      paddingBottom: "8px",
-    },
-    tableBodyIcon: {
-      cursor: "pointer",
-    },
-    colorPrimary: {
-      backgroundColor: "#880a15",
-    },
-    barColorPrimary: {
-      backgroundColor: "rgba(240, 144, 146, 1)",
-    },
-  })
-);
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+}));
 
 const Information = () => {
-  const classes = useStyles();
   const dispatch = useDispatch();
   const [value, setValue] = React.useState({
     symbol: "",
@@ -67,88 +50,75 @@ const Information = () => {
   React.useEffect(() => {
     dispatch(cryptoActions.getCurrencyPair());
   }, [dispatch]);
-  console.log(value);
+
+  React.useEffect(() => {
+    client.onopen = () => {
+      console.log('WebSocket Connected');
+      client.send("message from client")
+
+    }
+    client.onmessage = (e: any) => {
+      console.log('EEEEEEEE', e)
+
+    }
+  }, []);
   const cryptoReducer = useSelector((state: RootState) => state.cryptoReducers);
   const currency: CurrencyPair[] = cryptoReducer.currencyPair || [];
   return (
     <>
-      <div>
-        <Autocomplete
-          disablePortal
-          id="combo-box-demo"
-          options={currency}
-          getOptionLabel={(option: CurrencyPair) => option.symbol || ""}
-          onChange={(event, value) => setValue(value as CurrencyPair)}
-          sx={{ width: 300 }}
-          renderInput={(params) => (
-            <TextField {...params} label="Currency Pairs" />
-          )}
-        />
-        <StyledDividerLine />
-        <Card className={classes.root}>
-          <TableContainer component={Paper}>
-            <ThemeProvider theme={tableTheme}>
-              <Table
-                size="small"
-                className={classes.table}
-                aria-label="settlement Report list"
-              >
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div>
+          <div style={{ margin: '10px' }}>
+            <Autocomplete
+              disablePortal
+              id="combo-box-demo"
+              options={currency}
+              getOptionLabel={(option: CurrencyPair) => option.symbol || ""}
+              onChange={(event, value) => setValue(value as CurrencyPair)}
+              sx={{ width: 300 }}
+              renderInput={(params) => (
+                <TextField {...params} label="Currency Pairs" />
+              )}
+            />
+          </div>
+          <div style={{ margin: '10px' }}>
+            <StyledDividerLine />
+          </div>
+          <Card style={{ margin: '10px' }}>
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 700 }} aria-label="customized table">
                 <TableHead>
                   <TableRow>
-                    <>
-                      <TableCell>
-                        <StyledTableHeadCell>BID PRICE</StyledTableHeadCell>
-                      </TableCell>
-                      <TableCell>
-                        <StyledTableHeadCell>BID QUANTITY</StyledTableHeadCell>
-                      </TableCell>
-                      <TableCell>
-                        <StyledTableHeadCell>ASK PRICE</StyledTableHeadCell>
-                      </TableCell>
-                      <TableCell>
-                        <StyledTableHeadCell>ASK QUNATITY</StyledTableHeadCell>
-                      </TableCell>
-                    </>
+                    <StyledTableCell>BID (PRICE / QTY)</StyledTableCell>
+                    <StyledTableCell>ASK (PRICE / QTY)</StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {/* {cryptoData &&
-                    cryptoData.map((row) => (
-                      <TableRow style={{ position: "relative" }}>
-                        <>
-                          <TableCell className={classes.tableBodyCell}>
-                            {row.bidPrice}
-                          </TableCell>
-                          <TableCell className={classes.tableBodyCell}>
-                            {row.bidQty}
-                          </TableCell>
-                          <TableCell className={classes.tableBodyCell}>
-                            {row.askPrice}
-                          </TableCell>
-                          <TableCell className={classes.tableBodyCell}>
-                            {row.askQty}
-                          </TableCell>
-                        </>
-                      </TableRow>
-                    ))} */}
+                  <StyledTableRow>
+                    <StyledTableCell component="th" scope="row">0.06580800<br />1.83970000</StyledTableCell>
+                    <StyledTableCell>0.06580900<br />10.23480000</StyledTableCell>
+                  </StyledTableRow>
+                  <StyledTableRow>
+                    <StyledTableCell>0.06580300<br />0.14850000</StyledTableCell>
+                    <StyledTableCell>0.06581000<br />1.70000000</StyledTableCell>
+                  </StyledTableRow>
+                  <StyledTableRow>
+                    <StyledTableCell>0.06579900<br />0.14850000</StyledTableCell>
+                    <StyledTableCell>0.06581100<br />0.02560000</StyledTableCell>
+                  </StyledTableRow>
+                  <StyledTableRow>
+                    <StyledTableCell>0.06579600<br />0.10000000</StyledTableCell>
+                    <StyledTableCell>0.06581600<br />0.39140000</StyledTableCell>
+                  </StyledTableRow>
+                  <StyledTableRow>
+                    <StyledTableCell>0.06579200<br />0.05940000</StyledTableCell>
+                    <StyledTableCell>0.06581700<br />0.97780000</StyledTableCell>
+                  </StyledTableRow>
                 </TableBody>
               </Table>
-            </ThemeProvider>
-          </TableContainer>
-          {/* {cryptoData && cryptoData.length ? (
-            <ThemeProvider>
-              <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
-                component="div"
-                count={total}
-                rowsPerPage={pagination.limit}
-                page={pagination.current_page - 1}
-                onChangePage={handleChangePage}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
-              />
-            </ThemeProvider>
-          ) : null} */}
-        </Card>
+            </TableContainer>
+          </Card>
+        </div>
       </div>
     </>
   );
