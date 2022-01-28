@@ -5,5 +5,10 @@ export interface OrderBook {
 }
 export interface CurrencyPair {
   symbol: string;
-  price: string;
 }
+
+export interface filters {
+  pair: string;
+  limit: number;
+}
+

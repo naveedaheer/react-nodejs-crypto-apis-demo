@@ -4,7 +4,7 @@ import { adminTableConstants } from "../constants";
 import { OrderBook, CurrencyPair } from "../../types/common.types";
 import { cryptoService } from "../../services/crypto";
 
-const getSettlementList = () => {
+const getSettlementList = (params: any) => {
   const request = () => ({ type: adminTableConstants.GET_TABLE_LIST_REQUEST });
   const success = (orderBooks: OrderBook[]) => ({
     type: adminTableConstants.GET_TABLE_LIST_SUCCESS,
@@ -17,7 +17,7 @@ const getSettlementList = () => {
   return (dispatch: Dispatch) => {
     dispatch(request());
     cryptoService
-      .getCrypto()
+      .getCrypto(params)
       .then((res) => {
         dispatch(success(res.data));
       })

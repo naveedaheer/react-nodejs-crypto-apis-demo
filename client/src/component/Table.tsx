@@ -7,11 +7,10 @@ import TableRow from "@mui/material/TableRow";
 import TableHead from "@mui/material/TableHead";
 import { useDispatch, useSelector } from "react-redux";
 import { cryptoActions } from "../store/actions";
-import { OrderBook, CurrencyPair } from "../types/common.types";
+import { OrderBook, CurrencyPair, filters } from "../types/common.types";
 import { RootState } from "../store/reducers";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import { w3cwebsocket as W3CWebSocket } from "websocket";
 import {
   Card,
   Paper,
@@ -19,7 +18,6 @@ import {
 import { styled } from '@mui/material/styles';
 import { tableCellClasses } from '@mui/material/TableCell';
 import { StyledDividerLine } from "./StyledComponents";
-const client = new W3CWebSocket('ws://localhost:8000');
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -41,29 +39,29 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+
+const initialFilters: filters = {
+  pair: "",
+  limit: 5,
+};
 const Information = () => {
   const dispatch = useDispatch();
   const [value, setValue] = React.useState({
     symbol: "",
-    price: "",
   });
+  const [selectedFilters, setSelectedFilters] = React.useState<filters>(initialFilters);
   React.useEffect(() => {
     dispatch(cryptoActions.getCurrencyPair());
   }, [dispatch]);
-
   React.useEffect(() => {
-    client.onopen = () => {
-      console.log('WebSocket Connected');
-      client.send("message from client")
+    dispatch(cryptoActions.getSettlementList(selectedFilters));
+  }, [dispatch, value]);
 
-    }
-    client.onmessage = (e: any) => {
-      console.log('EEEEEEEE', e)
-
-    }
-  }, []);
   const cryptoReducer = useSelector((state: RootState) => state.cryptoReducers);
+  const tableData: OrderBook[] = cryptoReducer.orderBooks || [];
   const currency: CurrencyPair[] = cryptoReducer.currencyPair || [];
+
+  console.log(tableData)
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -74,7 +72,7 @@ const Information = () => {
               id="combo-box-demo"
               options={currency}
               getOptionLabel={(option: CurrencyPair) => option.symbol || ""}
-              onChange={(event, value) => setValue(value as CurrencyPair)}
+              onChange={(event, value) => { setValue(value as CurrencyPair); setSelectedFilters({ ...selectedFilters, pair: value?.symbol as string }) }}
               sx={{ width: 300 }}
               renderInput={(params) => (
                 <TextField {...params} label="Currency Pairs" />
