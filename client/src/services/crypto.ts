@@ -7,10 +7,10 @@ const getCrypto = (params: any) => {
   if (params) {
     query = qs.stringify(params);
   }
-  return API.get(`/fetch-order-books?${query}`);
+  return API.get(`/order-book/fetch-order-books?${query}`);
 };
 
-const getCurrency = () => API.get("/get-currency-pairs");
+const getCurrency = () => API.get("/order-book/get-currency-pairs");
 
 export const cryptoService = {
   getCrypto,
