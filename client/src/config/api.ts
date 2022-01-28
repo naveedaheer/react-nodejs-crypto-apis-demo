@@ -13,16 +13,3 @@ export const API = axios.create({
  */
 // API.defaults.headers.post['Content-Type'] = 'application/json';
 
-/**
- * The below code runs for every endpoint request
- */
-
-API.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response.status === 401) {
-      console.log("Unauthorized")
-    }
-    return Promise.reject(error);
-  },
-);
