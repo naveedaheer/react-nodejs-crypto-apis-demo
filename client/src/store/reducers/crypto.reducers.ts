@@ -4,14 +4,14 @@ import { AdminTableActionTypes, adminTableConstants } from "../constants";
 export interface IState {
   loading: boolean;
   isError: boolean;
-  orderBooks: OrderBook[];
+  orderBooks: OrderBook;
   currencyPair: CurrencyPair[];
 }
 
 const initialState: IState = {
   loading: false,
   isError: false,
-  orderBooks: [],
+  orderBooks: { lastUpdateId: 0, bids: [[]], asks: [[]] },
   currencyPair: [],
 };
 

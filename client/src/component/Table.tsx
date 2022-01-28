@@ -42,7 +42,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 const initialFilters: filters = {
   pair: "",
-  limit: 5,
+  limit: 10,
 };
 const Information = () => {
   const dispatch = useDispatch();
@@ -54,11 +54,11 @@ const Information = () => {
     dispatch(cryptoActions.getCurrencyPair());
   }, [dispatch]);
   React.useEffect(() => {
-    dispatch(cryptoActions.getSettlementList(selectedFilters));
-  }, [dispatch, value]);
+    dispatch(cryptoActions.getOrderBook(selectedFilters));
+  }, [dispatch, value, selectedFilters]);
 
   const cryptoReducer = useSelector((state: RootState) => state.cryptoReducers);
-  const orderBooks: any = cryptoReducer.orderBooks || [];
+  const orderBooks: OrderBook = cryptoReducer.orderBooks || {};
   const currency: CurrencyPair[] = cryptoReducer.currencyPair || [];
 
   return (
@@ -74,7 +74,7 @@ const Information = () => {
               onChange={(event, value) => { setValue(value as CurrencyPair); setSelectedFilters({ ...selectedFilters, pair: value?.symbol as string }) }}
               sx={{ width: 300 }}
               renderInput={(params) => (
-                <TextField {...params} label="Currency Pairs" />
+                <TextField {...params} label="Trade Pairs" />
               )}
             />
           </div>

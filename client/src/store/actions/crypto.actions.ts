@@ -1,12 +1,12 @@
 import { Dispatch } from "redux";
 import { AxiosError } from "axios";
 import { adminTableConstants } from "../constants";
-import { OrderBook, CurrencyPair } from "../../types/common.types";
+import { OrderBook, CurrencyPair, filters } from "../../types/common.types";
 import { cryptoService } from "../../services/crypto";
 
-const getSettlementList = (params: any) => {
+const getOrderBook = (params: filters) => {
   const request = () => ({ type: adminTableConstants.GET_TABLE_LIST_REQUEST });
-  const success = (orderBooks: OrderBook[]) => ({
+  const success = (orderBooks: OrderBook) => ({
     type: adminTableConstants.GET_TABLE_LIST_SUCCESS,
     orderBooks,
   });
@@ -53,6 +53,6 @@ const getCurrencyPair = () => {
 };
 
 export const cryptoActions = {
-  getSettlementList,
+  getOrderBook,
   getCurrencyPair,
 };
