@@ -17,6 +17,7 @@ import {
 import { styled } from '@mui/material/styles';
 import { tableCellClasses } from '@mui/material/TableCell';
 import { StyledDividerLine } from "./StyledComponents";
+import { history } from "../helpers";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -43,6 +44,7 @@ const initialFilters: filters = {
   pair: "",
   limit: 10,
 };
+
 const Information = () => {
   const dispatch = useDispatch();
   const [value, setValue] = React.useState({
@@ -67,15 +69,14 @@ const Information = () => {
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '50px' }}>
-        <div>
+        <div style={{ width: '80%' }}>
           <div style={{ margin: '10px' }}>
             <Autocomplete
               disablePortal
               id="combo-box-demo"
               options={currency}
               getOptionLabel={(option: CurrencyPair) => option.symbol || ""}
-              onChange={(event, value) => { setValue(value as CurrencyPair); setSelectedFilters({ ...selectedFilters, pair: value?.symbol as string }) }}
-              sx={{ width: 300 }}
+              onChange={(event, value) => { setValue(value as CurrencyPair); setSelectedFilters({ ...selectedFilters, pair: value?.symbol as string }); history.push('?pair=' + value?.symbol) }}
               renderInput={(params) => (
                 <TextField {...params} label="Trade Pairs" />
               )}
@@ -86,7 +87,7 @@ const Information = () => {
           </div>
           <Card style={{ margin: '10px', display: 'flex' }}>
             <TableContainer style={{ borderRadius: '0px !important' }}>
-              <Table sx={{ minWidth: 240 }} aria-label="customized table">
+              <Table sx={{ minWidth: 180 }} aria-label="customized table">
                 <TableHead>
                   <TableRow>
                     <StyledTableCell>BID (PRICE / QTY)</StyledTableCell>
@@ -106,7 +107,7 @@ const Information = () => {
               </Table>
             </TableContainer>
             <TableContainer style={{ borderRadius: '0px !important' }}>
-              <Table sx={{ minWidth: 240 }} aria-label="customized table">
+              <Table sx={{ minWidth: 180 }} aria-label="customized table">
                 <TableHead>
                   <TableRow>
                     <StyledTableCell>ASK (PRICE / QTY)</StyledTableCell>
