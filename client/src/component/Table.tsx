@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import { styled } from '@mui/material/styles';
 import { tableCellClasses } from '@mui/material/TableCell';
+import * as qs from "qs";
 import { StyledDividerLine } from "./StyledComponents";
 import { history } from "../helpers";
 
@@ -57,6 +58,8 @@ const Information = () => {
   }, [dispatch]);
 
   React.useEffect(() => {
+    const parsed = qs.parse(window.location.search);
+    console.log(parsed);
     if (selectedFilters?.pair) {
       dispatch(cryptoActions.getOrderBook(selectedFilters));
     }
@@ -64,7 +67,7 @@ const Information = () => {
 
   const cryptoReducer = useSelector((state: RootState) => state.cryptoReducers);
   const orderBooks: OrderBook = cryptoReducer.orderBooks || {};
-  const currency: CurrencyPair[] = cryptoReducer.currencyPair || [];
+  const pairs: CurrencyPair[] = cryptoReducer.currencyPair || [];
 
   return (
     <>
@@ -74,7 +77,7 @@ const Information = () => {
             <Autocomplete
               disablePortal
               id="combo-box-demo"
-              options={currency}
+              options={pairs}
               getOptionLabel={(option: CurrencyPair) => option.symbol || ""}
               onChange={(event, value) => { setValue(value as CurrencyPair); setSelectedFilters({ ...selectedFilters, pair: value?.symbol as string }); history.push('?pair=' + value?.symbol) }}
               renderInput={(params) => (
