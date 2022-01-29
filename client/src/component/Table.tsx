@@ -48,9 +48,10 @@ const initialFilters: filters = {
 
 const Information = () => {
   const dispatch = useDispatch();
-  const [value, setValue] = React.useState({
-    symbol: "",
-  });
+  // const [value, setValue] = React.useState({
+  //   symbol: "",
+  // });
+  const [value, setValue] = React.useState('')
   const [selectedFilters, setSelectedFilters] = React.useState<filters>(initialFilters);
 
   React.useEffect(() => {
@@ -68,6 +69,17 @@ const Information = () => {
     }
   }, [dispatch, value, selectedFilters]);
 
+  const handleChange = (value: string) => {
+    setValue(value);
+    setSelectedFilters({ ...selectedFilters, pair: value });
+    if (selectedFilters.pair) {
+      history.push("")
+    }
+    else {
+      history.push('?pair=' + value)
+    }
+  }
+
   const cryptoReducer = useSelector((state: RootState) => state.cryptoReducers);
   const orderBooks: OrderBook = cryptoReducer.orderBooks || {};
   const pairs: CurrencyPair[] = cryptoReducer.currencyPair || [];
@@ -82,7 +94,8 @@ const Information = () => {
               id="combo-box-demo"
               options={pairs}
               getOptionLabel={(option: CurrencyPair) => option.symbol || ""}
-              onChange={(event, value) => { setValue(value as CurrencyPair); setSelectedFilters({ ...selectedFilters, pair: value?.symbol as string }); history.push('?pair=' + value?.symbol) }}
+              // onChange={(event, value) => { setValue(value as CurrencyPair); setSelectedFilters({ ...selectedFilters, pair: value?.symbol as string }); history.push('?pair=' + value?.symbol) }}
+              onChange={(event, value) => handleChange(value?.symbol as string)}
               renderInput={(params) => (
                 <TextField {...params} label="Trade Pairs" />
               )}
