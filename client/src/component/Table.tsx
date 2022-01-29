@@ -48,9 +48,6 @@ const initialFilters: filters = {
 
 const Information = () => {
   const dispatch = useDispatch();
-  // const [value, setValue] = React.useState({
-  //   symbol: "",
-  // });
   const [value, setValue] = React.useState('')
   const [selectedFilters, setSelectedFilters] = React.useState<filters>(initialFilters);
 
