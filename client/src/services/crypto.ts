@@ -1,8 +1,9 @@
 import { API } from "../config";
 import * as qs from "qs";
+import { filters } from "../types/common.types";
 
 // eslint-disable-next-line max-len
-const getCrypto = (params: any) => {
+const getCrypto = (params: filters) => {
   let query = "";
   if (params) {
     query = qs.stringify(params);
