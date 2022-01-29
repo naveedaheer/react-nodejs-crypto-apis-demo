@@ -58,6 +58,13 @@ export const cryptoReducers = (
         loading: false,
         isError: true,
       };
+    case adminTableConstants.RESET_ORDER_BOOK_STATE:
+      return {
+        ...state,
+        loading: false,
+        isError: false,
+        orderBooks: { lastUpdateId: 0, bids: [[]], asks: [[]] },
+      };
     default:
       return state;
   }

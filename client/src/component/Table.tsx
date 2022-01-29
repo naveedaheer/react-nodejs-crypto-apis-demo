@@ -63,6 +63,9 @@ const Information = () => {
     if (selectedFilters?.pair) {
       dispatch(cryptoActions.getOrderBook(selectedFilters));
     }
+    else {
+      dispatch(cryptoActions.resetState())
+    }
   }, [dispatch, value, selectedFilters]);
 
   const cryptoReducer = useSelector((state: RootState) => state.cryptoReducers);

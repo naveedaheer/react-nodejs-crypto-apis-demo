@@ -51,8 +51,16 @@ const getCurrencyPair = () => {
       );
   };
 };
+const resetState = () => {
+  const request = () => ({ type: adminTableConstants.RESET_ORDER_BOOK_STATE });
+
+  return (dispatch: Dispatch) => {
+    dispatch(request());
+  };
+};
 
 export const cryptoActions = {
   getOrderBook,
   getCurrencyPair,
+  resetState,
 };

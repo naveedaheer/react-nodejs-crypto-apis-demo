@@ -8,6 +8,8 @@ interface Types {
   GET_CURRENCY_PAIR_REQUEST: string;
   GET_CURRENCY_PAIR_SUCCESS: string;
   GET_CURRENCY_PAIR_FAILURE: string;
+
+  RESET_ORDER_BOOK_STATE: string;
 }
 
 export const adminTableConstants: Types = {
@@ -18,6 +20,8 @@ export const adminTableConstants: Types = {
   GET_CURRENCY_PAIR_REQUEST: "GET_CURRENCY_PAIR_REQUEST",
   GET_CURRENCY_PAIR_SUCCESS: "GET_CURRENCY_PAIR_SUCCESS",
   GET_CURRENCY_PAIR_FAILURE: "GET_CURRENCY_PAIR_FAILURE",
+
+  RESET_ORDER_BOOK_STATE: "RESET_ORDER_BOOK_STATE",
 };
 interface LoadGetAdminTableListAction {
   type: typeof adminTableConstants.GET_TABLE_LIST_REQUEST;
