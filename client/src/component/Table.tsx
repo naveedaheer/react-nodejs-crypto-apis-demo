@@ -14,6 +14,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import {
   Card,
 } from "@mui/material";
+import { useParams } from "react-router-dom";
 import { styled } from '@mui/material/styles';
 import { tableCellClasses } from '@mui/material/TableCell';
 import * as qs from "qs";
@@ -46,26 +47,33 @@ const initialFilters: filters = {
   limit: 10,
 };
 
+type RouteParams = {
+  pair: string;
+};
+
 const Information = () => {
   const dispatch = useDispatch();
+  const params = useParams<RouteParams>();
   const [value, setValue] = React.useState('')
   const [selectedFilters, setSelectedFilters] = React.useState<filters>(initialFilters);
-
   React.useEffect(() => {
     dispatch(cryptoActions.getCurrencyPair());
   }, [dispatch]);
 
   React.useEffect(() => {
     const parsed = qs.parse(window.location.search);
-    console.log(parsed);
-    if (selectedFilters?.pair) {
+    console.log("params", params);
+    if (selectedFilters.pair) {
       dispatch(cryptoActions.getOrderBook(selectedFilters));
-      history.push('?pair=' + selectedFilters.pair)
+      history.push(`${selectedFilters.pair}`)
+    } else if(params?.pair) {
+      setValue(params.pair);
+      setSelectedFilters({ ...selectedFilters, pair: params.pair });
     }
-  }, [dispatch, value, selectedFilters]);
+  }, [dispatch, value, selectedFilters, params]);
 
   const handleChange = (value: string) => {
-    if(!value) {
+    if (!value) {
       dispatch(cryptoActions.resetState())
       history.push("/")
     }
