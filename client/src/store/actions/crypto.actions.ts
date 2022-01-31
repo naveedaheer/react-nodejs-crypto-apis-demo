@@ -1,12 +1,12 @@
 import { Dispatch } from "redux";
 import { AxiosError } from "axios";
 import { adminTableConstants } from "../constants";
-import { OrderBook, CurrencyPair } from "../../types/common.types";
+import { OrderBook, CurrencyPair, filters } from "../../types/common.types";
 import { cryptoService } from "../../services/crypto";
 
-const getSettlementList = () => {
+const getOrderBook = (params: filters) => {
   const request = () => ({ type: adminTableConstants.GET_TABLE_LIST_REQUEST });
-  const success = (orderBooks: OrderBook[]) => ({
+  const success = (orderBooks: OrderBook) => ({
     type: adminTableConstants.GET_TABLE_LIST_SUCCESS,
     orderBooks,
   });
@@ -17,7 +17,7 @@ const getSettlementList = () => {
   return (dispatch: Dispatch) => {
     dispatch(request());
     cryptoService
-      .getCrypto()
+      .getCrypto(params)
       .then((res) => {
         dispatch(success(res.data));
       })
@@ -51,8 +51,16 @@ const getCurrencyPair = () => {
       );
   };
 };
+const resetState = () => {
+  const request = () => ({ type: adminTableConstants.RESET_ORDER_BOOK_STATE });
+
+  return (dispatch: Dispatch) => {
+    dispatch(request());
+  };
+};
 
 export const cryptoActions = {
-  getSettlementList,
+  getOrderBook,
   getCurrencyPair,
+  resetState,
 };

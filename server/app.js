@@ -29,8 +29,10 @@ wss.on("connection", function connection(ws) {
   });
 });
 
+app.get('/', (req, res) => res.send('Server Up and Running'))
+
 app.use("/order-book", orderBookController);
 app.use(express.json());
 app.use(cors());
 
-server.listen(8000, () => console.log(`Lisening on port :8000`));
+server.listen(3000, () => console.log(`Lisening on port :3000`));

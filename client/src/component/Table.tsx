@@ -7,19 +7,18 @@ import TableRow from "@mui/material/TableRow";
 import TableHead from "@mui/material/TableHead";
 import { useDispatch, useSelector } from "react-redux";
 import { cryptoActions } from "../store/actions";
-import { OrderBook, CurrencyPair } from "../types/common.types";
+import { OrderBook, CurrencyPair, filters } from "../types/common.types";
 import { RootState } from "../store/reducers";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import { w3cwebsocket as W3CWebSocket } from "websocket";
 import {
   Card,
-  Paper,
 } from "@mui/material";
 import { styled } from '@mui/material/styles';
 import { tableCellClasses } from '@mui/material/TableCell';
+import * as qs from "qs";
 import { StyledDividerLine } from "./StyledComponents";
-const client = new W3CWebSocket('ws://localhost:8000');
+import { history } from "../helpers";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -27,7 +26,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
+    fontSize: 15,
   },
 }));
 
@@ -41,79 +40,105 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+
+const initialFilters: filters = {
+  pair: "",
+  limit: 10,
+};
+
 const Information = () => {
   const dispatch = useDispatch();
-  const [value, setValue] = React.useState({
-    symbol: "",
-    price: "",
-  });
+  const [value, setValue] = React.useState('')
+  const [selectedFilters, setSelectedFilters] = React.useState<filters>(initialFilters);
+
   React.useEffect(() => {
     dispatch(cryptoActions.getCurrencyPair());
   }, [dispatch]);
 
   React.useEffect(() => {
-    client.onopen = () => {
-      console.log('WebSocket Connected');
-      client.send("message from client")
-
+    const parsed = qs.parse(window.location.search);
+    console.log(parsed);
+    if (selectedFilters?.pair) {
+      dispatch(cryptoActions.getOrderBook(selectedFilters));
     }
-    client.onmessage = (e: any) => {
-      console.log('EEEEEEEE', e)
-
+    else {
+      dispatch(cryptoActions.resetState())
     }
-  }, []);
+  }, [dispatch, value, selectedFilters]);
+
+  const handleChange = (value: string) => {
+    setValue(value);
+    setSelectedFilters({ ...selectedFilters, pair: value });
+    if (selectedFilters.pair) {
+      history.push("")
+    }
+    else {
+      history.push('?pair=' + value)
+    }
+  }
+
   const cryptoReducer = useSelector((state: RootState) => state.cryptoReducers);
-  const currency: CurrencyPair[] = cryptoReducer.currencyPair || [];
+  const orderBooks: OrderBook = cryptoReducer.orderBooks || {};
+  const pairs: CurrencyPair[] = cryptoReducer.currencyPair || [];
+
   return (
     <>
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <div>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '50px' }}>
+        <div style={{ width: '80%' }}>
           <div style={{ margin: '10px' }}>
             <Autocomplete
               disablePortal
               id="combo-box-demo"
-              options={currency}
+              options={pairs}
               getOptionLabel={(option: CurrencyPair) => option.symbol || ""}
-              onChange={(event, value) => setValue(value as CurrencyPair)}
-              sx={{ width: 300 }}
+              // onChange={(event, value) => { setValue(value as CurrencyPair); setSelectedFilters({ ...selectedFilters, pair: value?.symbol as string }); history.push('?pair=' + value?.symbol) }}
+              onChange={(event, value) => handleChange(value?.symbol as string)}
               renderInput={(params) => (
-                <TextField {...params} label="Currency Pairs" />
+                <TextField {...params} label="Trade Pairs" />
               )}
             />
           </div>
           <div style={{ margin: '10px' }}>
             <StyledDividerLine />
           </div>
-          <Card style={{ margin: '10px' }}>
-            <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 700 }} aria-label="customized table">
+          <Card style={{ margin: '10px', display: 'flex' }}>
+            <TableContainer style={{ borderRadius: '0px !important' }}>
+              <Table sx={{ minWidth: 180 }} aria-label="customized table">
                 <TableHead>
                   <TableRow>
                     <StyledTableCell>BID (PRICE / QTY)</StyledTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {
+                    orderBooks && orderBooks.bids && orderBooks.bids.map((item: string[], i: number) => (
+                      <>
+                        <StyledTableRow key={i}>
+                          <StyledTableCell>{item[0]}<br />{item[1]}</StyledTableCell>
+                        </StyledTableRow>
+                      </>
+                    ))
+                  }
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TableContainer style={{ borderRadius: '0px !important' }}>
+              <Table sx={{ minWidth: 180 }} aria-label="customized table">
+                <TableHead>
+                  <TableRow>
                     <StyledTableCell>ASK (PRICE / QTY)</StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  <StyledTableRow>
-                    <StyledTableCell component="th" scope="row">0.06580800<br />1.83970000</StyledTableCell>
-                    <StyledTableCell>0.06580900<br />10.23480000</StyledTableCell>
-                  </StyledTableRow>
-                  <StyledTableRow>
-                    <StyledTableCell>0.06580300<br />0.14850000</StyledTableCell>
-                    <StyledTableCell>0.06581000<br />1.70000000</StyledTableCell>
-                  </StyledTableRow>
-                  <StyledTableRow>
-                    <StyledTableCell>0.06579900<br />0.14850000</StyledTableCell>
-                    <StyledTableCell>0.06581100<br />0.02560000</StyledTableCell>
-                  </StyledTableRow>
-                  <StyledTableRow>
-                    <StyledTableCell>0.06579600<br />0.10000000</StyledTableCell>
-                    <StyledTableCell>0.06581600<br />0.39140000</StyledTableCell>
-                  </StyledTableRow>
-                  <StyledTableRow>
-                    <StyledTableCell>0.06579200<br />0.05940000</StyledTableCell>
-                    <StyledTableCell>0.06581700<br />0.97780000</StyledTableCell>
-                  </StyledTableRow>
+                  {
+                    orderBooks && orderBooks.bids && orderBooks.asks.map((item: string[], i: number) => (
+                      <>
+                        <StyledTableRow key={i}>
+                          <StyledTableCell>{item[0]}<br />{item[1]}</StyledTableCell>
+                        </StyledTableRow>
+                      </>
+                    ))
+                  }
                 </TableBody>
               </Table>
             </TableContainer>
