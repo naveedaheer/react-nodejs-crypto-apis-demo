@@ -16,5 +16,5 @@ app.use("/order-book", orderBookController);
 
 app.get('/', (req, res) => res.send('Server Up and Running'))
 
-const PORT = 8000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Lisening on port ${PORT}`));
