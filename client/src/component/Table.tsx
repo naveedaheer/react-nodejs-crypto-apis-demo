@@ -60,8 +60,7 @@ const Information = () => {
     console.log(parsed);
     if (selectedFilters?.pair) {
       dispatch(cryptoActions.getOrderBook(selectedFilters));
-    }
-    else {
+    } else {
       dispatch(cryptoActions.resetState())
     }
   }, [dispatch, value, selectedFilters]);
