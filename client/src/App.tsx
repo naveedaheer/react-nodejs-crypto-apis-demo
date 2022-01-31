@@ -5,7 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 import Table from "./component/Table";
 
-function App() {
+const App = () => {
   return (
     <>
       <BrowserRouter>
