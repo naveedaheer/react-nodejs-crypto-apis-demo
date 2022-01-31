@@ -58,7 +58,7 @@ const Information = () => {
 
     }
     client.onmessage = (e: any) => {
-      console.log('EEEEEEEE', e)
+      console.log('EEEEEEEEe', e)
 
     }
   }, []);
