@@ -14,12 +14,14 @@ import Autocomplete from "@mui/material/Autocomplete";
 import {
   Card,
 } from "@mui/material";
+import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { styled } from '@mui/material/styles';
 import { tableCellClasses } from '@mui/material/TableCell';
 import * as qs from "qs";
 import { StyledDividerLine } from "./StyledComponents";
 import { history } from "../helpers";
 
+const client = new W3CWebSocket('ws://localhost:8000');
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -79,6 +81,19 @@ const Information = () => {
   const cryptoReducer = useSelector((state: RootState) => state.cryptoReducers);
   const orderBooks: OrderBook = cryptoReducer.orderBooks || {};
   const pairs: CurrencyPair[] = cryptoReducer.currencyPair || [];
+
+  React.useEffect(() => {
+    client.onopen = () => {
+      console.log('WebSocket Connected');
+      client.send("message from client")
+
+    }
+    client.onmessage = (e:any) => {
+      console.log('EEEEEEEE', e)
+     
+    }
+    // dispatch(cryptoActions.getCurrencyPair());
+  },[]);
 
   return (
     <>
