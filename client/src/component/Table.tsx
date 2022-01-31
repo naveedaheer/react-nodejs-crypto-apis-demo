@@ -62,13 +62,13 @@ const Information = () => {
       dispatch(cryptoActions.getOrderBook(selectedFilters));
       history.push('?pair=' + selectedFilters.pair)
     }
-    else {
-      dispatch(cryptoActions.resetState())
-      history.push("/")
-    }
   }, [dispatch, value, selectedFilters]);
 
   const handleChange = (value: string) => {
+    if(!value) {
+      dispatch(cryptoActions.resetState())
+      history.push("/")
+    }
     setValue(value);
     setSelectedFilters({ ...selectedFilters, pair: value });
   }
