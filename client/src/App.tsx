@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import { Routes, Route, Outlet, Link } from "react-router-dom";
+import { Routes, Route, Outlet } from "react-router-dom";
 import { BrowserRouter } from 'react-router-dom';
 
 import Table from "./component/Table";
