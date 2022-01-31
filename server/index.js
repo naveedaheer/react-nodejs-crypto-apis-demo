@@ -19,7 +19,7 @@ wss.on("connection", function connection(ws) {
     ws.send(JSON.stringify(msg));
   }, 1000);
   ws.on("message", function incoming(message) {
-    console.log("received123444", message);
+    console.log("received1234445", message);
 
     wss.clients.forEach(function each(client) {
       if (client !== ws && client.readyState === WebSocket.OPEN) {
