@@ -15,9 +15,9 @@ import {
   Card,
 } from "@mui/material";
 import { w3cwebsocket as W3CWebSocket } from "websocket";
+import { useParams } from "react-router-dom";
 import { styled } from '@mui/material/styles';
 import { tableCellClasses } from '@mui/material/TableCell';
-import * as qs from "qs";
 import { StyledDividerLine } from "./StyledComponents";
 import { history } from "../helpers";
 
@@ -48,34 +48,37 @@ const initialFilters: filters = {
   limit: 10,
 };
 
+type RouteParams = {
+  pair: string;
+};
+
 const Information = () => {
   const dispatch = useDispatch();
+  const params = useParams<RouteParams>();
   const [value, setValue] = React.useState('')
   const [selectedFilters, setSelectedFilters] = React.useState<filters>(initialFilters);
-
+  
   React.useEffect(() => {
     dispatch(cryptoActions.getCurrencyPair());
   }, [dispatch]);
 
   React.useEffect(() => {
-    const parsed = qs.parse(window.location.search);
-    console.log(parsed);
-    if (selectedFilters?.pair) {
+    if (selectedFilters.pair) {
       dispatch(cryptoActions.getOrderBook(selectedFilters));
-    } else {
-      dispatch(cryptoActions.resetState())
+      history.push(`${selectedFilters.pair}`)
+    } else if(params?.pair) {
+      setValue(params.pair);
+      setSelectedFilters({ ...selectedFilters, pair: params.pair });
     }
-  }, [dispatch, value, selectedFilters]);
+  }, [dispatch, value, selectedFilters, params]);
 
   const handleChange = (value: string) => {
+    if (!value) {
+      dispatch(cryptoActions.resetState())
+      history.push("/")
+    }
     setValue(value);
     setSelectedFilters({ ...selectedFilters, pair: value });
-    if (selectedFilters.pair) {
-      history.push("")
-    }
-    else {
-      history.push('?pair=' + value)
-    }
   }
 
   const cryptoReducer = useSelector((state: RootState) => state.cryptoReducers);
@@ -105,7 +108,6 @@ const Information = () => {
               id="combo-box-demo"
               options={pairs}
               getOptionLabel={(option: CurrencyPair) => option.symbol || ""}
-              // onChange={(event, value) => { setValue(value as CurrencyPair); setSelectedFilters({ ...selectedFilters, pair: value?.symbol as string }); history.push('?pair=' + value?.symbol) }}
               onChange={(event, value) => handleChange(value?.symbol as string)}
               renderInput={(params) => (
                 <TextField {...params} label="Trade Pairs" />
