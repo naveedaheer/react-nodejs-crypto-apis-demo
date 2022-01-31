@@ -17,7 +17,6 @@ import {
 import { useParams } from "react-router-dom";
 import { styled } from '@mui/material/styles';
 import { tableCellClasses } from '@mui/material/TableCell';
-import * as qs from "qs";
 import { StyledDividerLine } from "./StyledComponents";
 import { history } from "../helpers";
 
@@ -61,8 +60,6 @@ const Information = () => {
   }, [dispatch]);
 
   React.useEffect(() => {
-    const parsed = qs.parse(window.location.search);
-    console.log("params", params);
     if (selectedFilters.pair) {
       dispatch(cryptoActions.getOrderBook(selectedFilters));
       history.push(`${selectedFilters.pair}`)
