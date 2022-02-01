@@ -20,7 +20,7 @@ import { styled } from '@mui/material/styles';
 import { tableCellClasses } from '@mui/material/TableCell';
 import { StyledDividerLine } from "../StyledComponents";
 import { history } from "../helpers";
-const client = new W3CWebSocket('ws://localhost:8000');
+const client = new W3CWebSocket('ws://order-book-server.herokuapp.com');
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -52,15 +52,15 @@ type RouteParams = {
   pair: string;
 };
 
-const Information = () => {
+const OrderBooks = () => {
   const dispatch = useDispatch();
   const params = useParams<RouteParams>();
   const [value, setValue] = React.useState('')
-  // const [state, setState] = React.useState([])
+  const [state, setState] = React.useState<OrderBook>({ lastUpdateId: 0, bids: [[]], asks: [[]] })
   const [selectedFilters, setSelectedFilters] = React.useState<filters>(initialFilters);
 
   const cryptoReducer = useSelector((state: RootState) => state.cryptoReducers);
-  const orderBooks: OrderBook = cryptoReducer.orderBooks || {};
+  // const orderBooks: OrderBook = cryptoReducer.orderBooks || {};
   const pairs: CurrencyPair[] = cryptoReducer.currencyPair || [];
 
   React.useEffect(() => {
@@ -90,15 +90,12 @@ const Information = () => {
     }
     client.onmessage = (e: any) => {
       if (selectedFilters.pair) {
-        console.log("fetched latest data", e)
-        // dispatch(cryptoActions.getOrderBook(selectedFilters));
+        setState(JSON.parse(e.data))
       }
-      // setState(JSON.parse(e.data))
     }
   }, [dispatch, selectedFilters]);
-
   return (
-    <>
+    <React.Fragment>
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '50px' }}>
         <div style={{ width: '80%' }}>
           <div style={{ margin: '10px' }}>
@@ -126,7 +123,7 @@ const Information = () => {
                 </TableHead>
                 <TableBody>
                   {
-                    orderBooks && orderBooks.bids && orderBooks.bids.map((item: string[], i: number) => (
+                    state && state?.bids && state?.bids.map((item: string[], i: number) => (
                       <>
                         <StyledTableRow key={i}>
                           <StyledTableCell>{item[0]}<br />{item[1]}</StyledTableCell>
@@ -146,7 +143,7 @@ const Information = () => {
                 </TableHead>
                 <TableBody>
                   {
-                    orderBooks && orderBooks.asks && orderBooks.asks.map((item: string[], i: number) => (
+                    state && state?.asks && state?.asks.map((item: string[], i: number) => (
                       <>
                         <StyledTableRow key={i}>
                           <StyledTableCell>{item[0]}<br />{item[1]}</StyledTableCell>
@@ -160,8 +157,8 @@ const Information = () => {
           </Card>
         </div>
       </div>
-    </>
+    </React.Fragment>
   );
 };
 
-export default Information;
+export default OrderBooks;
