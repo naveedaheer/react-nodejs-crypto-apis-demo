@@ -4,7 +4,7 @@ const cors = require("cors");
 const orderBookController = require("./src/order-book/controller");
 const server = require("http").createServer(app);
 const WebSocket = require("ws");
-const wss = new WebSocket.Server({ server: server });
+const wss = new WebSocket.Server({ server });
 
 app.use(cors())
 app.options('*', cors());
