@@ -59,9 +59,10 @@ const Information = () => {
   // const [state, setState] = React.useState([])
   const [selectedFilters, setSelectedFilters] = React.useState<filters>(initialFilters);
 
-  React.useEffect(() => {
-    dispatch(cryptoActions.getCurrencyPair());
-  }, [dispatch]);
+  const cryptoReducer = useSelector((state: RootState) => state.cryptoReducers);
+  const orderBooks: OrderBook = cryptoReducer.orderBooks || {};
+  const pairs: CurrencyPair[] = cryptoReducer.currencyPair || [];
+
   React.useEffect(() => {
     if (selectedFilters.pair) {
       dispatch(cryptoActions.getOrderBook(selectedFilters));
@@ -81,16 +82,15 @@ const Information = () => {
     setSelectedFilters({ ...selectedFilters, pair: value });
   }
 
-  const cryptoReducer = useSelector((state: RootState) => state.cryptoReducers);
-  const orderBooks: OrderBook = cryptoReducer.orderBooks || {};
-  const pairs: CurrencyPair[] = cryptoReducer.currencyPair || [];
-
   React.useEffect(() => {
+    dispatch(cryptoActions.getCurrencyPair());
     client.onopen = () => {
+      console.log("on open")
       client.send("message from client")
-
     }
     client.onmessage = (e: any) => {
+      console.log("fetched latest data", e)
+      // dispatch(cryptoActions.getOrderBook(selectedFilters));
       // setState(JSON.parse(e.data))
     }
   }, []);

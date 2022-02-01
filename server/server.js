@@ -29,7 +29,7 @@ wss.on("connection", function connection(ws) {
         ws.send(JSON.stringify(data));
       });
     }
-  }, 1000);
+  }, 5000);
   wss.on("message", function incoming(message) {
     console.log("received1234445", message);
 
