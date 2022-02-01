@@ -89,11 +89,13 @@ const Information = () => {
       client.send("message from client")
     }
     client.onmessage = (e: any) => {
-      console.log("fetched latest data", e)
-      // dispatch(cryptoActions.getOrderBook(selectedFilters));
+      if (selectedFilters.pair) {
+        console.log("fetched latest data", e)
+        // dispatch(cryptoActions.getOrderBook(selectedFilters));
+      }
       // setState(JSON.parse(e.data))
     }
-  }, []);
+  }, [dispatch, selectedFilters]);
 
   return (
     <>
