@@ -56,17 +56,17 @@ const Information = () => {
   const dispatch = useDispatch();
   const params = useParams<RouteParams>();
   const [value, setValue] = React.useState('')
+  // const [state, setState] = React.useState([])
   const [selectedFilters, setSelectedFilters] = React.useState<filters>(initialFilters);
-  
+
   React.useEffect(() => {
     dispatch(cryptoActions.getCurrencyPair());
   }, [dispatch]);
-
   React.useEffect(() => {
     if (selectedFilters.pair) {
       dispatch(cryptoActions.getOrderBook(selectedFilters));
       history.push(`${selectedFilters.pair}`)
-    } else if(params?.pair) {
+    } else if (params?.pair) {
       setValue(params.pair);
       setSelectedFilters({ ...selectedFilters, pair: params.pair });
     }
@@ -87,16 +87,13 @@ const Information = () => {
 
   React.useEffect(() => {
     client.onopen = () => {
-      console.log('WebSocket Connected');
       client.send("message from client")
 
     }
-    client.onmessage = (e:any) => {
-      console.log('EEEEEEEE', e)
-     
+    client.onmessage = (e: any) => {
+      setState(JSON.parse(e.data))
     }
-    // dispatch(cryptoActions.getCurrencyPair());
-  },[]);
+  }, []);
 
   return (
     <>
@@ -147,7 +144,7 @@ const Information = () => {
                 </TableHead>
                 <TableBody>
                   {
-                    orderBooks && orderBooks.bids && orderBooks.asks.map((item: string[], i: number) => (
+                    orderBooks && orderBooks.asks && orderBooks.asks.map((item: string[], i: number) => (
                       <>
                         <StyledTableRow key={i}>
                           <StyledTableCell>{item[0]}<br />{item[1]}</StyledTableCell>
