@@ -13,11 +13,11 @@ wss.on("connection", function connection(ws) {
   console.log("A new client Connected!");
   ws.send("Welcome New Client!");
   setInterval(() => {
-    const msg = {
-      name: "test",
-      message: "message",
-    };
-    ws.send(JSON.stringify(msg));
+    // const msg = {
+    //   name: "test",
+    //   message: "message",
+    // };
+    // ws.send(JSON.stringify(msg));
   }, 1000);
   ws.on("message", function incoming(message) {
     console.log("received1234445", message);
@@ -34,5 +34,7 @@ app.use("/order-book", orderBookController);
 
 app.get('/', (req, res) => res.send('Server Up and Running'))
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Lisening on port ${PORT}`));
+// const PORT = process.env.PORT || 8000;
+// app.listen(PORT, () => console.log(`Lisening on port ${PORT}`));
+server.listen(8000, () => console.log(`Lisening on port :8000`))
+module.exports = wss;
