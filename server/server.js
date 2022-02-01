@@ -1,17 +1,20 @@
 const express = require("express");
-const cors = require("cors");
 const app = express();
-const orderBookController = require("./src/order-book/controller");
-const orderBookService = require("./src/order-book/services");
+const cors = require("cors");
+const cron = require('node-cron');
 const server = require("http").createServer(app);
 const WebSocket = require("ws");
 const wss = new WebSocket.Server({ server: server });
 
 app.use(cors());
 app.options("*", cors());
-app.use("/order-book", orderBookController);
+
+const orderBookController = require("./src/order-book/controller");
+const orderBookService = require("./src/order-book/services");
 
 let selectedPair;
+
+app.use("/order-book", orderBookController);
 app.get("/order-book/fetch-order-books", (req, res) => {
   selectedPair = req.query;
   orderBookService
@@ -20,24 +23,17 @@ app.get("/order-book/fetch-order-books", (req, res) => {
       res.status(200).send(data);
     })
 });
+
 wss.on("connection", function connection(ws) {
-  console.log("A new client Connected!");
-  setInterval(() => {
+  /**
+   * Fetching latest data every 5 seconds 
+   */
+  cron.schedule('*/5 * * * * *', () => {
     if (selectedPair) {
-      orderBookService.getOrderBooks(selectedPair).then(async (data) => {
-        //  res.status(200).send(data);
+      orderBookService.getOrderBooks(selectedPair).then((data) => {
         ws.send(JSON.stringify(data));
       });
     }
-  }, 10000);
-  wss.on("message", function incoming(message) {
-    console.log("received1234445", message);
-
-    wss.clients.forEach(function each(client) {
-      if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send(message);
-      }
-    });
   });
 });
 
