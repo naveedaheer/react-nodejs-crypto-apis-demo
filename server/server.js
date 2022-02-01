@@ -1,12 +1,20 @@
 const express = require("express");
+const bodyParser = require('body-parser');
 const app = express();
 const cors = require("cors");
 const orderBookController = require("./src/order-book/controller");
-app.use(express.json());
-app.use(cors());
 const server = require("http").createServer(app);
 const WebSocket = require("ws");
 const wss = new WebSocket.Server({ server: server });
+
+app.use(cors())
+app.options('*', cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    parameterLimit: 100000,
+    limit: '50mb',
+    extended: true
+}));
 
 wss.on("connection", function connection(ws) {
   console.log("A new client Connected!");
@@ -29,10 +37,9 @@ wss.on("connection", function connection(ws) {
   });
 });
 
+app.use("/order-book", orderBookController);
+
 app.get('/', (req, res) => res.send('Server Up and Running'))
 
-app.use("/order-book", orderBookController);
-app.use(express.json());
-app.use(cors());
-
-server.listen(3000, () => console.log(`Lisening on port :3000`));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Lisening on port ${PORT}`));
