@@ -34,7 +34,6 @@ app.use("/order-book", orderBookController);
 
 app.get('/', (req, res) => res.send('Server Up and Running'))
 
-// const PORT = process.env.PORT || 8000;
-// app.listen(PORT, () => console.log(`Lisening on port ${PORT}`));
-server.listen(8000, () => console.log(`Lisening on port :8000`))
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => console.log(`Lisening on port ${PORT}`));
 module.exports = wss;
