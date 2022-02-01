@@ -1,5 +1,4 @@
 const express = require("express");
-const bodyParser = require('body-parser');
 const app = express();
 const cors = require("cors");
 const orderBookController = require("./src/order-book/controller");
@@ -9,12 +8,6 @@ const wss = new WebSocket.Server({ server: server });
 
 app.use(cors())
 app.options('*', cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    parameterLimit: 100000,
-    limit: '50mb',
-    extended: true
-}));
 
 wss.on("connection", function connection(ws) {
   console.log("A new client Connected!");
