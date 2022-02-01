@@ -37,5 +37,7 @@ wss.on("connection", function connection(ws) {
   });
 });
 
+app.get('/', (req, res) => res.send('Server Up and Running'))
+
 const PORT = process.env.PORT || 8000;
 server.listen(PORT, () => console.log(`Lisening on port ${PORT}`));
