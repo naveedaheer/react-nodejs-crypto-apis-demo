@@ -20,8 +20,8 @@ import { styled } from '@mui/material/styles';
 import { tableCellClasses } from '@mui/material/TableCell';
 import { StyledDividerLine } from "../StyledComponents";
 import { history } from "../helpers";
-
 const client = new W3CWebSocket('ws://localhost:8000');
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,

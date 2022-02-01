@@ -17,7 +17,7 @@ app.get("/order-book/fetch-order-books", (req, res) => {
   orderBookService
     .getOrderBooks(req.query)
     .then(async (data) => {
-       res.status(200).send(data);
+      res.status(200).send(data);
     })
 });
 wss.on("connection", function connection(ws) {
