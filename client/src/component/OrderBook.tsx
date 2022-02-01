@@ -12,8 +12,10 @@ import { RootState } from "../store/reducers";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import {
-  Card,
+  Card, FormControl, InputLabel, MenuItem, Select,
 } from "@mui/material";
+import { makeStyles } from '@material-ui/core/styles';
+import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { useParams } from "react-router-dom";
 import { styled } from '@mui/material/styles';
 import { tableCellClasses } from '@mui/material/TableCell';
@@ -40,6 +42,25 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+const useStyles = makeStyles(() => ({
+  container: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: '50px'
+  },
+  form: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    margin: '10px',
+  },
+  formInput: {
+    width: '49%'
+  },
+  spacing: {
+    margin: '10px'
+  }
+}));
 
 const initialFilters: filters = {
   pair: "",
@@ -51,6 +72,7 @@ type RouteParams = {
 };
 
 const Information = () => {
+  const classes = useStyles();
   const dispatch = useDispatch();
   const params = useParams<RouteParams>();
   const [value, setValue] = React.useState('')
@@ -63,7 +85,7 @@ const Information = () => {
     if (selectedFilters.pair) {
       dispatch(cryptoActions.getOrderBook(selectedFilters));
       history.push(`${selectedFilters.pair}`)
-    } else if(params?.pair) {
+    } else if (params?.pair) {
       setValue(params.pair);
       setSelectedFilters({ ...selectedFilters, pair: params.pair });
     }
@@ -84,21 +106,38 @@ const Information = () => {
 
   return (
     <>
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '50px' }}>
+      <div className={classes.container}>
         <div style={{ width: '80%' }}>
-          <div style={{ margin: '10px' }}>
-            <Autocomplete
-              disablePortal
-              id="combo-box-demo"
-              options={pairs}
-              getOptionLabel={(option: CurrencyPair) => option.symbol || ""}
-              onChange={(event, value) => handleChange(value?.symbol as string)}
-              renderInput={(params) => (
-                <TextField {...params} label="Trade Pairs" />
-              )}
-            />
+          <div className={classes.form}>
+            <div className={classes.formInput}>
+              <Autocomplete
+                disablePortal
+                fullWidth
+                id="combo-box-demo"
+                options={pairs}
+                getOptionLabel={(option: CurrencyPair) => option.symbol || ""}
+                onChange={(event, value) => handleChange(value?.symbol as string)}
+                renderInput={(params) => (
+                  <TextField {...params} label="Trade Pairs" />
+                )}
+              />
+            </div>
+            <div className={classes.formInput}>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Table Type</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  label="Table Type"
+                >
+                  <MenuItem value={10}>Both</MenuItem>
+                  <MenuItem value={20}>Buy</MenuItem>
+                  <MenuItem value={30}>Sell</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
           </div>
-          <div style={{ margin: '10px' }}>
+          <div className={classes.spacing}>
             <StyledDividerLine />
           </div>
           <Card style={{ margin: '10px', display: 'flex' }}>
