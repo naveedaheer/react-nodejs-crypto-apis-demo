@@ -2,7 +2,7 @@ import React from "react";
 import "./App.css";
 import { Routes, Route, Outlet } from "react-router-dom";
 import { BrowserRouter } from 'react-router-dom';
-import OrderBook from "./component/OrderBook";
+import OrderBook from "./components/OrderBook";
 
 const App = () => {
   return (

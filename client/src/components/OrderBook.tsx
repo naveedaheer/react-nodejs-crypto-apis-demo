@@ -18,7 +18,7 @@ import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { useParams } from "react-router-dom";
 import { styled } from '@mui/material/styles';
 import { tableCellClasses } from '@mui/material/TableCell';
-import { StyledDividerLine } from "./StyledComponents";
+import { StyledDividerLine } from "../StyledComponents";
 import { history } from "../helpers";
 
 const client = new W3CWebSocket('ws://localhost:8000');
@@ -91,7 +91,7 @@ const Information = () => {
 
     }
     client.onmessage = (e: any) => {
-      setState(JSON.parse(e.data))
+      // setState(JSON.parse(e.data))
     }
   }, []);
 
