@@ -64,6 +64,10 @@ const OrderBooks = () => {
   const pairs: CurrencyPair[] = cryptoReducer.currencyPair || [];
 
   React.useEffect(() => {
+    dispatch(cryptoActions.getCurrencyPair());
+  }, [dispatch])
+
+  React.useEffect(() => {
     if (selectedFilters.pair) {
       dispatch(cryptoActions.getOrderBook(selectedFilters));
       history.push(`${selectedFilters.pair}`)
@@ -75,15 +79,15 @@ const OrderBooks = () => {
 
   const handleChange = (value: string) => {
     if (!value) {
-      dispatch(cryptoActions.resetState())
       history.push("/")
+      dispatch(cryptoActions.getOrderBook({ pair: "", limit: 10 }));
+      setState({ lastUpdateId: 0, bids: [[]], asks: [[]] });
     }
     setValue(value);
     setSelectedFilters({ ...selectedFilters, pair: value });
   }
 
   React.useEffect(() => {
-    dispatch(cryptoActions.getCurrencyPair());
     client.onopen = () => {
       console.log("on open")
       client.send("message from client")
@@ -103,6 +107,7 @@ const OrderBooks = () => {
               disablePortal
               id="combo-box-demo"
               options={pairs}
+              defaultValue={{symbol: selectedFilters.pair}}
               getOptionLabel={(option: CurrencyPair) => option.symbol || ""}
               onChange={(event, value) => handleChange(value?.symbol as string)}
               renderInput={(params) => (
