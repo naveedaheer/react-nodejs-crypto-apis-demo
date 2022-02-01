@@ -14,11 +14,13 @@ import Autocomplete from "@mui/material/Autocomplete";
 import {
   Card,
 } from "@mui/material";
+import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { useParams } from "react-router-dom";
 import { styled } from '@mui/material/styles';
 import { tableCellClasses } from '@mui/material/TableCell';
-import { StyledDividerLine } from "./StyledComponents";
+import { StyledDividerLine } from "../StyledComponents";
 import { history } from "../helpers";
+const client = new W3CWebSocket('ws://order-book-server.herokuapp.com');
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -50,20 +52,26 @@ type RouteParams = {
   pair: string;
 };
 
-const Information = () => {
+const OrderBooks = () => {
   const dispatch = useDispatch();
   const params = useParams<RouteParams>();
   const [value, setValue] = React.useState('')
+  const [state, setState] = React.useState<OrderBook>({ lastUpdateId: 0, bids: [[]], asks: [[]] })
   const [selectedFilters, setSelectedFilters] = React.useState<filters>(initialFilters);
+
+  const cryptoReducer = useSelector((state: RootState) => state.cryptoReducers);
+  // const orderBooks: OrderBook = cryptoReducer.orderBooks || {};
+  const pairs: CurrencyPair[] = cryptoReducer.currencyPair || [];
+
   React.useEffect(() => {
     dispatch(cryptoActions.getCurrencyPair());
-  }, [dispatch]);
+  }, [dispatch])
 
   React.useEffect(() => {
     if (selectedFilters.pair) {
       dispatch(cryptoActions.getOrderBook(selectedFilters));
       history.push(`${selectedFilters.pair}`)
-    } else if(params?.pair) {
+    } else if (params?.pair) {
       setValue(params.pair);
       setSelectedFilters({ ...selectedFilters, pair: params.pair });
     }
@@ -71,19 +79,27 @@ const Information = () => {
 
   const handleChange = (value: string) => {
     if (!value) {
-      dispatch(cryptoActions.resetState())
       history.push("/")
+      dispatch(cryptoActions.getOrderBook({ pair: "", limit: 10 }));
+      setState({ lastUpdateId: 0, bids: [[]], asks: [[]] });
     }
     setValue(value);
     setSelectedFilters({ ...selectedFilters, pair: value });
   }
 
-  const cryptoReducer = useSelector((state: RootState) => state.cryptoReducers);
-  const orderBooks: OrderBook = cryptoReducer.orderBooks || {};
-  const pairs: CurrencyPair[] = cryptoReducer.currencyPair || [];
-
+  React.useEffect(() => {
+    client.onopen = () => {
+      console.log("on open")
+      client.send("message from client")
+    }
+    client.onmessage = (e: any) => {
+      if (selectedFilters.pair) {
+        setState(JSON.parse(e.data))
+      }
+    }
+  }, [dispatch, selectedFilters]);
   return (
-    <>
+    <React.Fragment>
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '50px' }}>
         <div style={{ width: '80%' }}>
           <div style={{ margin: '10px' }}>
@@ -91,6 +107,7 @@ const Information = () => {
               disablePortal
               id="combo-box-demo"
               options={pairs}
+              defaultValue={{symbol: selectedFilters.pair}}
               getOptionLabel={(option: CurrencyPair) => option.symbol || ""}
               onChange={(event, value) => handleChange(value?.symbol as string)}
               renderInput={(params) => (
@@ -111,7 +128,7 @@ const Information = () => {
                 </TableHead>
                 <TableBody>
                   {
-                    orderBooks && orderBooks.bids && orderBooks.bids.map((item: string[], i: number) => (
+                    state && state?.bids && state?.bids.map((item: string[], i: number) => (
                       <>
                         <StyledTableRow key={i}>
                           <StyledTableCell>{item[0]}<br />{item[1]}</StyledTableCell>
@@ -131,7 +148,7 @@ const Information = () => {
                 </TableHead>
                 <TableBody>
                   {
-                    orderBooks && orderBooks.bids && orderBooks.asks.map((item: string[], i: number) => (
+                    state && state?.asks && state?.asks.map((item: string[], i: number) => (
                       <>
                         <StyledTableRow key={i}>
                           <StyledTableCell>{item[0]}<br />{item[1]}</StyledTableCell>
@@ -145,8 +162,8 @@ const Information = () => {
           </Card>
         </div>
       </div>
-    </>
+    </React.Fragment>
   );
 };
 
-export default Information;
+export default OrderBooks;
